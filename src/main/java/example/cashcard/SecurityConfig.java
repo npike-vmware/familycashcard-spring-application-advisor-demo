@@ -34,12 +34,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests()
-            .requestMatchers(new AntPathRequestMatcher("/cashcards/**")).hasRole("CARD-OWNER")
-            .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
-            .and()
-            .csrf().disable()
-            .httpBasic(withDefaults());
+        http.authorizeHttpRequests(requests -> requests
+                .requestMatchers(new AntPathRequestMatcher("/cashcards/**")).hasRole("CARD-OWNER")
+                .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll())
+                .csrf(csrf -> csrf.disable())
+                .httpBasic(withDefaults());
         return http.build();
     }
 
