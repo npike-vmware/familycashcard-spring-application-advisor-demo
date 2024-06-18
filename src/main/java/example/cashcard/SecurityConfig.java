@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -18,18 +19,30 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
+//     @Bean
+//     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//         http.
+//                 authorizeHttpRequests((authz) ->
+//                         authz
+//                                 .requestMatchers("/cashcards/**").hasRole("CARD-OWNER")
+//                                 .requestMatchers("/h2-console/**").permitAll()
+//                 )
+//                 .csrf().disable()
+//                 .httpBasic(withDefaults());
+//         return http.build();
+//     }
+
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.
-                authorizeHttpRequests((authz) ->
-                        authz
-                                .requestMatchers("/cashcards/**").hasRole("CARD-OWNER")
-                                .requestMatchers("/h2-console/**").permitAll()
-                )
-                .csrf().disable()
-                .httpBasic(withDefaults());
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests()
+            .requestMatchers(new AntPathRequestMatcher("/cashcards/**")).hasRole("CARD-OWNER")
+            .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
+            .and()
+            .csrf().disable()
+            .httpBasic(withDefaults());
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
